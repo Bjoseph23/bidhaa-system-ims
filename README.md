@@ -10,7 +10,12 @@ This Inventory Management System (IMS) is a Python-based command-line applicatio
 - **Order Details Management:** Track the details of each order, including product, supplier, quantity, and order date.
 - **Category Management:** Add, update, delete, and search for product categories.
 
+## ERD Diagram
+![alt text](image.png)
+
+
 ## Installation
+
 
 1. Get a free API Key at:
 ```

@@ -93,7 +93,7 @@ def menu():
 
     # Order details options
     print("\nOrder Details Management:")
-    print("18. List all order details")
+    print("18. List all ordtell me which one is one to many and which is many to manyer details")
     print("19. Find order details by id")
     print("20. Create order details")
     print("21. Update order details")
