@@ -75,7 +75,7 @@ def find_product_by_id():
 def create_product():
     name = input("Enter the product's name: ")
     price = float(input("Enter the product's price: "))
-    category_id= input("Enter the product's category id: ")
+    category_id= float(input("Enter the product's category id: "))
     category = Category.find_by_id(category_id)
     if not category:
         print(f'Category {category_id} not found. Please create the category first.')
@@ -136,7 +136,7 @@ def create_order_history():
     order_date = input("Enter the order date (YYYY-MM-DD): ")
     try:
         order_history = OrderHistory.create(Product.find_by_id(product_id), quantity, order_date)
-        print(f'Success: {order_history}')
+        print(f'Success: {order_history} on {order_date}')
     except Exception as exc:
         print("Error creating order history: ", exc)
 

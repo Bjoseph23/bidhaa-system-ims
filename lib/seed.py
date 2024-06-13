@@ -28,12 +28,12 @@ def seed_database():
     print("Seeded database")
 
 def seed_products():
-    product1 = Product.create("Laptop", 1000.00, "High-performance laptop",1)
-    product2 = Product.create("T-Shirt", 20.00, "Comfortable and stylish T-shirt",2)
+    product1 = Product.create("Laptop", 1000.00,1)
+    product2 = Product.create("T-Shirt", 20.00,2)
 
 def seed_suppliers():
-    supplier1 = Supplier.create("Techies", "123 Main St")
-    supplier2 = Supplier.create("Hermes", "456 Elm St")
+    supplier1 = Supplier.create("Tech Solutions", "Moi Avenue Shop 2")
+    supplier2 = Supplier.create("Mavazi", "Thika Road Shop 3")
 
 def seed_order_history():
     product1 = Product.find_by_id(1)
