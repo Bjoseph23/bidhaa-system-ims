@@ -1,4 +1,4 @@
-# Inventory Management System
+# Bidhaa Inventory Management System
 
 This Inventory Management System (IMS) is a Python-based command-line application that helps manage products, suppliers, orders, and categories for a business.
 
