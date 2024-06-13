@@ -11,7 +11,15 @@ This Inventory Management System (IMS) is a Python-based command-line applicatio
 - **Category Management:** Add, update, delete, and search for product categories.
 
 ## ERD Diagram
+Entity-Relational Diagram (ERD) that shows the relationships between different records from diffrent tables:
+
 ![alt text](image.png)
+
+## Command-line interface (CLI) 
+
+Once the user enters the terminal, there is a user-frienly CLI as shown below:
+
+![alt text](image-1.png)
 
 ## Installation
 
