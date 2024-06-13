@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from models.product import Product
 from models.supplier import Supplier
 from models.order_detail import OrderDetails
@@ -7,40 +5,70 @@ from models.order_history import OrderHistory
 from models.category import Category
 
 def seed_database():
-    # Drop any existing tables (optional, comment out if not desired)
+    # Drop existing tables
     Product.drop_table()
     Supplier.drop_table()
     OrderDetails.drop_table()
     OrderHistory.drop_table()
     Category.drop_table()
 
+    # Create tables
     Product.create_table()
     Supplier.create_table()
     OrderDetails.create_table()
     OrderHistory.create_table()
     Category.create_table()
 
-    # Seed data (replace with your actual data)
-    category1 = Category.create("Electronics")
-    category2 = Category.create("Clothing")
+    # Seed data
+    seed_products()
+    seed_suppliers()
+    seed_order_history()
+    seed_order_details()
+    seed_categories()
 
-    product1 = Product.create(
-        "Laptop", 1000.00, "This is a high-performance laptop", category1.id
-    )
-    product2 = Product.create(
-        "T-Shirt", 20.00, "Comfortable and stylish T-shirt", category2.id
-    )
+    print("Seeded database")
 
+def seed_products():
+    # Seed products
+    product1 = Product.create("Laptop", 1000.00, "High-performance laptop")
+    product2 = Product.create("T-Shirt", 20.00, "Comfortable and stylish T-shirt")
+
+def seed_suppliers():
+    # Seed suppliers
     supplier1 = Supplier.create("TechGiant Inc.", "123 Main St")
     supplier2 = Supplier.create("Fashion Emporium", "456 Elm St")
 
-    order_history1 = OrderHistory.create(product1.id, 2, "2024-06-10")
-    order_detail1 = OrderDetails.create(order_history1.id, 500.00)
+def seed_order_history():
+    # Retrieve Product objects
+    product1 = Product.find_by_id(1)
+    product2 = Product.find_by_id(2)
 
-    order_history2 = OrderHistory.create(product2.id, 5, "2024-06-11")
-    order_detail2 = OrderDetails.create(order_history2.id, 10.00)
+    # Seed order history
+    if product1 and product2:
+        order_history1 = OrderHistory.create(product1, 2, "2024-06-10")
+        order_history2 = OrderHistory.create(product2, 5, "2024-06-11")
+    else:
+        print("Error: Product not found")
 
-    # Add more seed data as needed for other tables
 
-seed_database()
-print("Seeded database")
+def seed_order_details():
+    # Retrieve Product and Supplier objects
+    product1 = Product.find_by_id(1)
+    supplier1 = Supplier.find_by_id(1)
+    product2 = Product.find_by_id(2)
+    supplier2 = Supplier.find_by_id(2)
+
+    # Seed order details
+    if product1 and supplier1 and product2 and supplier2:
+        order_detail1 = OrderDetails.create(product1, supplier1, 2, "2024-06-10")
+        order_detail2 = OrderDetails.create(product2, supplier2, 5, "2024-06-11")
+    else:
+        print("Error: Product or Supplier not found")
+
+def seed_categories():
+    # Seed categories
+    category1 = Category.create("Electronics")
+    category2 = Category.create("Clothing")
+
+if __name__ == "__main__":
+    seed_database()

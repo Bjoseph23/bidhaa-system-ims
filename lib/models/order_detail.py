@@ -1,33 +1,42 @@
 from models.__init__ import CURSOR, CONN
 from models.product import Product
-from models.order_history import OrderHistory  # Assuming OrderHistory model exists
+from models.supplier import Supplier
 
 class OrderDetails:
 
-    # Dictionary of objects saved to the database.
     all = {}
 
-    def __init__(self, order_history: OrderHistory, quantity, price, id=None):
+    def __init__(self, product, supplier, quantity, order_date, id=None):
         self.id = id
-        self.order_history = order_history
+        self.product = product
+        self.supplier = supplier
         self.quantity = quantity
-        self.price = price
+        self.order_date = order_date
 
     def __repr__(self):
-        return f"<OrderDetails {self.id}: {self.order_history.product.name}, {self.quantity}>"
+        return f"<OrderDetails {self.id}: {self.product.name} from {self.supplier.name}, {self.quantity}>"
 
     @property
-    def order_history(self):
-        return self._order_history
+    def product(self):
+        return self._product
 
-    @order_history.setter
-    def order_history(self, order_history):
-        if isinstance(order_history, OrderHistory):
-            self._order_history = order_history
+    @product.setter
+    def product(self, product):
+        if isinstance(product, Product):
+            self._product = product
         else:
-            raise ValueError(
-                "Order history must be an OrderHistory object"
-            )
+            raise ValueError("Product must be a Product object")
+
+    @property
+    def supplier(self):
+        return self._supplier
+
+    @supplier.setter
+    def supplier(self, supplier):
+        if isinstance(supplier, Supplier):
+            self._supplier = supplier
+        else:
+            raise ValueError("Supplier must be a Supplier object")
 
     @property
     def quantity(self):
@@ -38,112 +47,57 @@ class OrderDetails:
         if isinstance(quantity, int) and quantity > 0:
             self._quantity = quantity
         else:
-            raise ValueError(
-                "Quantity must be a positive integer"
-            )
-
-    @property
-    def price(self):
-        return self._price
-
-    @price.setter
-    def price(self, price):
-        if isinstance(price, (int, float)) and price >= 0:
-            self._price = price
-        else:
-            raise ValueError(
-                "Price must be a non-negative number"
-            )
+            raise ValueError("Quantity must be a positive integer")
 
     @classmethod
     def create_table(cls):
-        """ Create a new table to persist the attributes of OrderDetails instances """
         sql = """
             CREATE TABLE IF NOT EXISTS order_details (
             id INTEGER PRIMARY KEY,
-            order_history_id INTEGER REFERENCES order_history(id),
+            product_id INTEGER REFERENCES products(id),
+            supplier_id INTEGER REFERENCES suppliers(id),
             quantity INTEGER,
-            price REAL)
+            order_date TEXT
+            )
         """
         CURSOR.execute(sql)
         CONN.commit()
 
     @classmethod
     def drop_table(cls):
-        """ Drop the table that persists OrderDetails instances """
-        sql = """
-            DROP TABLE IF EXISTS order_details;
-        """
+        sql = "DROP TABLE IF EXISTS order_details"
         CURSOR.execute(sql)
         CONN.commit()
 
     def save(self):
-        """ Insert a new row with order_history_id, quantity, and price values of the current OrderDetails instance.
-        Update object id attribute using the primary key value of new row.
-        Save the object in local dictionary using table row's PK as dictionary key"""
-        sql = """
-            INSERT INTO order_details (order_history_id, quantity, price)
-            VALUES (?, ?, ?)
-        """
-
-        CURSOR.execute(sql, (self.order_history.id, self.quantity, self.price))
+        sql = "INSERT INTO order_details (product_id, supplier_id, quantity, order_date) VALUES (?, ?, ?, ?)"
+        CURSOR.execute(sql, (self.product.id, self.supplier.id, self.quantity, self.order_date))
         CONN.commit()
-
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
     @classmethod
-    def create(cls, order_history: OrderHistory, quantity, price):
-        """ Initialize a new OrderDetails instance and save the object to the database """
-        order_details = cls(order_history, quantity, price)
-        order_details.save()
-        return order_details
+    def create(cls, product, supplier, quantity, order_date):
+        order = cls(product, supplier, quantity, order_date)
+        order.save()
+        return order
 
-    def update(self):
-        """Update the table row corresponding to the current OrderDetails instance."""
-        sql = """
-            UPDATE order_details
-            SET order_history_id = ?, quantity = ?, price = ?
-            WHERE id = ?
-        """
-        CURSOR.execute(sql, (self.order_history.id, self.quantity, self.price, self.id))
-        CONN.commit()
-
-    def delete(self):
-        """Delete the table row corresponding to the current OrderDetails instance,
-        delete the dictionary entry, and reassign id attribute"""
-
-        sql = """
-            DELETE FROM order_details
-            WHERE id = ?
-        """
-
-        CURSOR.execute(sql, (self.id,))
-        CONN.commit()
-
-        # Delete the dictionary entry using id as the key
-        del type(self).all[self.id]
-
-        # Set the id to None
-        self.id = None
+    @classmethod
+    def get_all(cls):
+        sql = "SELECT * FROM order_details"
+        rows = CURSOR.execute(sql).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
 
     @classmethod
     def instance_from_db(cls, row):
-        """Return an OrderDetails object having the attribute values from the table row."""
-
-        # Retrieve the order history object using the order_history_id
-        order_history = OrderHistory.find_by_id(row[1])
-
-        # Check the dictionary for an existing instance using the row's primary key
-        order_details = cls.all.get(row[0])
-        if order_details:
-            # ensure attributes match row values in case local instance was modified
-            order_details.order_history = order_history
-            order_details.quantity = row[2]
-            order_details.price = row[3]
+        order = cls.all.get(row[0])
+        if order:
+            order.product = Product.find_by_id(row[1])
+            order.supplier = Supplier.find_by_id(row[2])
+            order.quantity = row[3]
+            order.order_date = row[4]
         else:
-            # not in dictionary, create new instance and add to dictionary
-            order_details = cls(order_history, row[2], row[3])
-            order_details.id = row[0]
-            cls.all[order_details.id] = order_details
-        return order_details
+            order = cls(Product.find_by_id(row[1]), Supplier.find_by_id(row[2]), row[3], row[4])
+            order.id = row[0]
+            cls.all[order.id] = order
+        return order

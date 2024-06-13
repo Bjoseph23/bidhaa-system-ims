@@ -26,7 +26,7 @@ from helpers import (
     create_order_details,
     update_order_details,
     delete_order_details,
-    # Category functions (assuming Category is a separate table)
+    # Category functions
     list_categories,
     find_category_by_name,
     find_category_by_id,
@@ -34,7 +34,6 @@ from helpers import (
     update_category,
     delete_category,
 )
-
 
 def main():
     while True:
@@ -59,7 +58,7 @@ def main():
         elif choice in ("18", "19", "20", "21", "22"):
             order_details_functions(choice)
 
-        # Category options (assuming Category is a separate table)
+        # Category options
         elif choice in ("23", "24", "25", "26", "27", "28"):
             category_functions(choice)
 
@@ -105,7 +104,7 @@ def menu():
     print("21. Update order details")
     print("22. Delete order details")
 
-    # Category options (assuming Category is a separate table)
+    # Category options
     print("\nCategory Management:")
     print("23. List all categories")
     print("24. Find category by name")
