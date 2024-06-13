@@ -1,32 +1,27 @@
 from helpers import (
     exit_program,
-    # Supplier functions
     list_suppliers,
     find_supplier_by_name,
     find_supplier_by_id,
     create_supplier,
     update_supplier,
     delete_supplier,
-    # Product functions
     list_products,
     find_product_by_name,
     find_product_by_id,
     create_product,
     update_product,
     delete_product,
-    # Order history functions
     list_order_history,
     find_order_history_by_id,
     create_order_history,
     update_order_history,
     delete_order_history,
-    # Order details functions
     list_order_details,
     find_order_details_by_id,
     create_order_details,
     update_order_details,
     delete_order_details,
-    # Category functions
     list_categories,
     find_category_by_name,
     find_category_by_id,
@@ -43,7 +38,7 @@ def main():
             exit_program()
 
         # Supplier options
-        elif choice in ("1", "2", "3", "4", "5", "6"):
+        if choice in ("1", "2", "3", "4", "5", "6"):
             supplier_functions(choice)
 
         # Product options
@@ -112,6 +107,75 @@ def menu():
     print("26. Create category")
     print("27. Update category")
     print("28. Delete category")
+
+
+def supplier_functions(choice):
+    if choice == "1":
+        list_suppliers()
+    elif choice == "2":
+        find_supplier_by_name()
+    elif choice == "3":
+        find_supplier_by_id()
+    elif choice == "4":
+        create_supplier()
+    elif choice == "5":
+        update_supplier()
+    elif choice == "6":
+        delete_supplier()
+
+def product_functions(choice):
+    if choice == "7":
+        list_products()
+    elif choice == "8":
+        find_product_by_name()
+    elif choice == "9":
+        find_product_by_id()
+    elif choice == "10":
+        create_product()
+    elif choice == "11":
+        update_product()
+    elif choice == "12":
+        delete_product()
+
+def order_history_functions(choice):
+    if choice == "13":
+        list_order_history()
+    elif choice == "14":
+        find_order_history_by_id()
+    elif choice == "15":
+        create_order_history()
+    elif choice == "16":
+        update_order_history()
+    elif choice == "17":
+        delete_order_history()
+
+def order_details_functions(choice):
+    if choice == "18":
+        list_order_details()
+    elif choice == "19":
+        find_order_details_by_id()
+    elif choice == "20":
+        create_order_details()
+    elif choice == "21":
+        update_order_details()
+    elif choice == "22":
+        delete_order_details()
+
+def category_functions(choice):
+    if choice == "23":
+        list_categories()
+    elif choice == "24":
+        find_category_by_name()
+    elif choice == "24":
+        find_category_by_name()
+    elif choice == "25":
+        find_category_by_id()
+    elif choice == "26":
+        create_category()
+    elif choice == "27":
+        update_category()
+    elif choice == "28":
+        delete_category()
 
 
 if __name__ == "__main__":
