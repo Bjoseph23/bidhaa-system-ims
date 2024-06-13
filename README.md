@@ -1,239 +1,501 @@
-# Phase 3 CLI Project Template
+# CLI and ORM : Code-Along
 
 ## Learning Goals
 
-- Discuss the basic directory structure of a CLI.
-- Outline the first steps in building a CLI.
+- Implement a CLI for an ORM application
 
-***
+---
 
-## Introduction
+## Key Vocab
 
-You now have a basic idea of what constitutes a CLI, but you (understandably!)
-likely don't have the best idea of where to start. Fork and clone this lesson
-for a template for your CLI. Take a look at the directory structure before we
-begin:
+- **Command Line**: a text-based interface that is built into your computer's
+  operating system. It allows you to access the files and applications on your
+  computer manually or through scripts.
+- **Terminal**: the application in Mac OS that allows you to access the command
+  line.
+- **Command Shell/Powershell**: the applications in Windows that allow you to
+  access the command line.
+- **Command-Line Interface (CLI)**: a text-based interface used to run programs,
+  manage files and interact with objects in memory. As the name suggests, it is
+  run from the command line.
+- **Object-Relational Mapping (ORM)**: a programming technique that provides a
+  mapping between an object-oriented data model and a relational database model.
+- **Attribute**: variables that belong to an object.
+- **Property**: attributes that are controlled by methods.
+- **Decorator**: function that takes another function as an argument and returns
+  a new function with added functionality.
+
+---
+
+## Code Along
+
+Let's implement a CLI to provide a text-based interface to an ORM application.
+This lesson is a code-along, so fork and clone the repo.
+
+**NOTE: Remember to run `pipenv install` to install the dependencies and
+`pipenv shell` to enter your virtual environment before running your code.**
+
+```bash
+pipenv install
+pipenv shell
+```
+
+We'll add a command line interface to the company ORM application that we've
+worked with in previous lessons:
+
+![company erd](https://curriculum-content.s3.amazonaws.com/7134/python-p3-v2-orm/department_employee_erd.png)
+
+Take a look at the directory structure:
 
 ```console
 .
+└── lib
+    ├── models
+        ├── __init__.py
+        ├── department.py
+    │   └── employee.py
+    ├── testing
+        ├── conftest.py
+        ├── department_orm_test.py
+        ├── department_property_test.py
+        ├── employee_orm_test.py
+    │   └── employee_property_test.py
+    ├── cli.py
+    ├── company.db
+    ├── debug.py
+    ├── helpers.py
+    └── seed.py
 ├── Pipfile
 ├── Pipfile.lock
+├── pytest.ini
 ├── README.md
-└── lib
-    ├── cli.py
-    ├── db
-    │   ├── models.py
-    │   └── seed.py
-    ├── debug.py
-    └── helpers.py
 ```
 
-> **Note: You may already know some or all of the material covered in this
-> lesson. We hope that having it all in one place will help you in designing
-> and developing your project, regardless of where you're starting off.**
+The `lib/models` folder contains the `Department` and `Employee` class, along
+with `__init__.py`. There are a few things to note:
 
-***
+- The database environment setup is in `/lib/models/**init**.py`.
+- Import statements in the Python files have been evolved to account for the
+  `lib/models` folder.
 
-## Where Do I Start?
+You should not need to make any changes to `Department` or `Employee`.
 
-This project will likely be one of the biggest projects you've undertaken so
-far. Your first task should be creating a Git repository to keep track of your
-work and roll back any undesired changes.
+### Test files
 
-### Removing Existing Git Configuration
+This is **not** a test-driven code-along, although the repo does contain a
+`lib/testing` folder that tests the current implementation `Department` and
+`Employee`. If you look over the test files, you can see how to adapt the
+`import` statements to find classes within the `lib/models` subfolder. This
+could be useful when you're implementing the Phase 3 project if you choose to
+use a similar directory structure.
 
-If you're using this template, start off by removing the existing metadata for
-Github and Canvas. Run the following command to carry this out:
+The tests should pass if you run them:
 
-```console
-$ rm -rf .git .github .canvas
+```bash
+pytest -x
 ```
 
-The `rm` command removes files from your computer's memory. The `-r` flag tells
-the console to remove _recursively_, which allows the command to remove
-directories and the files within them. `-f` removes them permanently.
+### Seeding the database with sample data
 
-`.git` contains this directory's configuration to track changes and push to
-Github (you want to track and push _your own_ changes instead), and `.github`
-and `.canvas` contain the metadata to create a Canvas page from your Git repo.
-You don't have the permissions to edit our Canvas course, so it's not worth
-keeping them around.
+The file `lib/seed.py` contains code to initialize the database with sample
+departments and employees. Run the following command to seed the database:
 
-### Creating Your Own Git Repo
-
-First things first- rename this directory! Once you have an idea for a name,
-move one level up with `cd ..` and run `mv python-p3-cli-project-template
-<new-directory-name>` to change its name.
-
-> **Note: `mv` actually stands for "move", but your computer interprets this
-> rename as a move from a directory with the old name to a directory with
-> a new name.**
-
-`cd` back into your new directory and run `git init` to create a local git
-repository. Add all of your local files to version control with `git add --all`,
-then commit them with `git commit -m'initial commit'`. (You can change the
-message here- this one is just a common choice.)
-
-Navigate to [GitHub](https://github.com). In the upper-right corner of the page,
-click on the "+" dropdown menu, then select "New repository". Enter the name of
-your local repo, choose whether you would like it to be public or private, make
-sure "Initialize this repository with a README" is unchecked (you already have
-one), then click "Create repository".
-
-Head back to the command line and enter `git remote add <project name> <github
-url>`. This will map the remote repository to your local repository. Finally,
-push your first commit with `git push -u origin main`.
-
-Your project is now version-controlled locally and online. This will allow you
-to create different versions of your project and pick up your work on a
-different machine if the need arises.
-
-***
-
-## Generating Your Pipenv
-
-You might have noticed in the file structure- there's already a Pipfile! That
-being said, we haven't put much in there- just Python version 3.8 and ipdb.
-
-Install any dependencies you know you'll need for your project, like SQLAlchemy
-and Alembic, before you begin. You can do this straight from the command line:
-
-```console
-$ pipenv install sqlalchemy alembic
+```bash
+python lib/seed.py
 ```
 
-From here, you should run your second commit:
+You can use the SQLITE EXPLORER extension to explore the initial database
+contents. (Another alternative is to run `python lib/debug.py` and use the
+`ipbd` session to explore the database)
 
-```console
-$ git add Pipfile Pipfile.lock
-$ git commit -m'add sqlalchemy and alembic to pipenv'
-$ git push
+---
+
+### `cli.py` and `helpers.py`
+
+The file `lib/cli.py` contains a command line interface for our company database
+application. The `main` method has a loop that (1) displays a menu of choices,
+and then (2) calls a helper function based on the user's choice. The helper
+functions are contained in `lib/helpers.py`.
+
+If you look at `lib/helpers.py`, you'll notice most of the functions contain the
+`pass` statement.
+
+Try running `python lib/cli.py` and select a menu choice such as `1`. Since the
+helper functions contain the `pass` statement, no action is performed on the
+database. Enter `0` to exit the CLI.
+
+```bash
+Please select an option:
+0. Exit the program
+1. List all departments
+2. Find department by name
+3. Find department by id
+4: Create department
+5: Update department
+6: Delete department
+7. List all employees
+8. Find employee by name
+9. Find employee by id
+10: Create employee
+11: Update employee
+12: Delete employee
+13: List all employees in a department
+> 1
+Please select an option:
+0. Exit the program
+1. List all departments
+2. Find department by name
+3. Find department by id
+4: Create department
+5: Update department
+6: Delete department
+7. List all employees
+8. Find employee by name
+9. Find employee by id
+10: Create employee
+11: Update employee
+12: Delete employee
+13: List all employees in a department
+> 0
+Goodbye!
 ```
 
-Now that your environment is set up, run `pipenv shell` to enter it.
+We will implement the functions related to the `Department` class in this
+lesson. You will then implement the functions related to the `Employee` class in
+the lab.
 
-***
+### `list_departments()`
 
-## Generating Your Database
-
-Once you're in your environment, you can start development wherever you'd like.
-We think it's easiest to start with setting up your database.
-
-`cd` into the `lib/db` directory, then run `alembic init migrations` to set up
-Alembic. Modify line 58 in `alembic.ini` to point to the database you intend to
-create, then replace line 21 in `migrations/env.py` with the following:
+Let's start with the `list_departments()` function in `lib/helpers.py`. The
+function should get all departments stored in the database, then print each
+department on a new line. Replace the `pass` statement with the code shown
+below:
 
 ```py
-from models import Base
-target_metadata = Base.metadata
+def list_departments():
+    departments = Department.get_all()
+    for department in departments:
+        print(department)
 ```
 
-We haven't created our `Base` or any models just yet, but we know where they're
-going to be. Navigate to `models.py` and start creating those models. Remember
-to regularly run `alembic revision --autogenerate -m'<descriptive message>'` and
-`alembic upgrade head` to track your modifications to the database and create
-checkpoints in case you ever need to roll those modifications back.
+We can test this new functionality using the CLI. Run `python lib/cli.py`, then
+enter `1` at the menu prompt to list all departments:
 
-If you want to seed your database, now would be a great time to write out your
-`seed.py` script and run it to generate some test data. You may want to use
-Pipenv to install Faker to save you some time.
+```bash
+Please select an option:
+0. Exit the program
+1. List all departments
+...
+> 1
+<Department 1: Payroll, Building A, 5th Floor>
+<Department 2: Human Resources, Building C, East Wing>
+```
 
-***
+### `find_department_by_name()`
 
-## Generating Your CLI
-
-A CLI is, simply put, an interactive script. You can run it with `python cli.py`
-or include the shebang and make it executable with `chmod +x`. It will ask for
-input, do some work, and accomplish some sort of task by the end.
-
-Past that, CLIs can be whatever you'd like. An inventory navigator? A checkout
-station for a restaurant? A choose-your-adventure video game? Absolutely!
-
-Here's what all of these things have in common (if done well): a number of
-`import` statements (usually _a lot_ of import statements), an `if __name__ ==
-"__main__"` block, and a number of function calls inside of that block. These
-functions should be kept in other modules (ideally not _just_ `helpers.py`)
-
-There will likely be some `print()` statements in your CLI script to let the
-user know what's going on, but most of these can be placed in functions in
-other modules that are grouped with others that carry out similar tasks. You'll
-see some variable definitions, object initializations, and control flow
-operators (especially `if/else` blocks and `while` loops) as well. When your
-project is done, your `cli.py` file might look like this:
+The function `find_department_by_name()` should prompt for a `name`, find the
+`Department` instance that matches, and print the matching object's data or an
+error message:
 
 ```py
-from helpers import (
-    function_1, function_2,
-    function_3, function_4,
-    function_5, function_6,
-    function_7, function_8,
-    function_9, function_10
-)
+def find_department_by_name():
+    name = input("Enter the department's name: ")
+    department = Department.find_by_name(name)
+    print(department) if department else print(
+        f'Department {name} not found')
+```
 
-if __name__ == '__main__':
-    print('Welcome to my CLI!')
-    function_1()
-    x = 0
-    while not x:
-        x = function_2(x)
-    if x < 0:
-        y = function_3(x)
+Run `python lib/cli.py` to test the function:
+
+```bash
+Please select an option:
+0. Exit the program
+1. List all departments
+2. Find department by name
+...
+> 2
+Enter the department's name: Payroll
+<Department 1: Payroll, Building A, 5th Floor>
+```
+
+Try entering a name that does not match any department:
+
+```bash
+Please select an option:
+0. Exit the program
+1. List all departments
+2. Find department by name
+...
+> 2
+Enter the department's name: Sales and Marketing
+Department Sales and Marketing not found
+```
+
+### `find_department_by_id()`
+
+The function `find_department_by_id()` should prompt for an `id`, find the
+`Department` instance that matches, and print either the matching object's data
+or an error message:
+
+```py
+def find_department_by_id():
+    #use a trailing underscore not to override the built-in id function
+    id_ = input("Enter the department's id: ")
+    department = Department.find_by_id(id_)
+    print(department) if department else print(f'Department {id_} not found')
+```
+
+Run `python lib/cli.py` to test the function. Test with various id values:
+
+- An id that matches a department instance such as `1` or `2`.
+- An id that does not match any departments, i.e. `99`.
+- A id value that is not an int, such as `one`.
+
+### `create_department()`
+
+The function `create_department()` should prompt for a name and location, then
+create and persist a new `Department` class instance. Surround the code in a
+`try/except` block in case an exception is thrown by the `name` or `location`
+property setter methods:
+
+```py
+def create_department():
+    name = input("Enter the department's name: ")
+    location = input("Enter the department's location: ")
+    try:
+        department = Department.create(name, location)
+        print(f'Success: {department}')
+    except Exception as exc:
+        print("Error creating department: ", exc)
+```
+
+Let's test the method with valid attribute values, then list all departments to
+confirm the new department was added:
+
+```bash
+Please select an option:
+0. Exit the program
+1. List all departments
+2. Find department by name
+3. Find department by id
+4: Create department
+5: Update department
+6: Delete department
+7. List all employees
+8. Find employee by name
+9. Find employee by id
+10: Create employee
+11: Update employee
+12: Delete employee
+13: List all employees in a department
+> 4
+Enter the department's name: Sales
+Enter the department's location: Building B
+Success: <Department 3: Sales, Building B>
+```
+
+Let's confirm the department was added to the database by listing all
+departments:
+
+```bash
+Please select an option:
+0. Exit the program
+1. List all departments
+...
+> 1
+<Department 1: Payroll, Building A, 5th Floor>
+<Department 2: Human Resources, Building C, East Wing>
+<Department 3: Sales, Building B>
+```
+
+Try entering invalid data for name and location:
+
+```bash
+Please select an option:
+...
+> 4
+Enter the department's name:
+Enter the department's location:
+Error creating department:  Name cannot be empty and must be a string
+```
+
+### `update_department()`
+
+The function `update_department()` should prompt for the department `id`,
+`name`, and `location`. The function must update the Python object's state as
+well as update the database row for that object. The function should print an
+error message if the `id` does not match a row in the table, or if the provided
+`name` or `location` are not valid.
+
+```py
+def update_department():
+    id_ = input("Enter the department's id: ")
+    if department := Department.find_by_id(id_):
+        try:
+            name = input("Enter the department's new name: ")
+            department.name = name
+            location = input("Enter the department's new location: ")
+            department.location = location
+
+            department.update()
+            print(f'Success: {department}')
+        except Exception as exc:
+            print("Error updating department: ", exc)
     else:
-        y = function_4(x)
-    z = function_5(y)
-    z = function_6(z)
-    z = function_7(z)
-    z = function_8(z)
-    function_9(z)
-    function_10(x, y, z)
-    print('Thanks for using my CLI')
-
+        print(f'Department {id_} not found')
 ```
 
-***
+Test the function with valid values for `id`, `name`, and `location`.
 
-## Updating Your README.md
+```bash
+Please select an option:
+...
+> 5
+Enter the department's id: 1
+Enter the department's new name: Payroll and Accounting
+Enter the department's new location: Building Z
+Success: <Department 1: Payroll and Accounting, Building Z>
+```
 
-`README.md` is a Markdown file that describes your project. These files can be
-used in many different ways- you may have noticed that we use them to generate
-entire Canvas lessons- but they're most commonly used as homepages for online
-Git repositories. **When you develop something that you want other people to
-use, you need to have a README.**
+Confirm the database was updated by listing all departments:
 
-Markdown is not a language that we cover in Flatiron's Software Engineering
-curriculum, but it's not a particularly difficult language to learn (if you've
-ever left a comment on Reddit, you might already know the basics). Refer to the
-cheat sheet in this lesson's resources for a basic guide to Markdown.
+```bash
+Please select an option:
+...
+> 1
+<Department 1: Payroll and Accounting, Building Z>
+<Department 2: Human Resources, Building C, East Wing>
+<Department 3: Sales, Building B>
+```
 
-### What Goes into a README?
+You should also test by providing an invalid id such as `99`, as well as empty
+strings for the `name` and `location` to ensure the function prints appropriate
+error messages.
 
-This README should serve as a template for your own- go through the important
-files in your project and describe what they do. Each file that you edit
-(you can ignore your Alembic files) should get at least a paragraph. Each
-function should get a small blurb.
+### `delete_department()`
 
-You should descibe your actual CLI script first, and with a good level of
-detail. The rest should be ordered by importance to the user. (Probably
-functions next, then models.)
+The function `delete_department()` should prompt for the department `id` and
+delete the department from the database if it exists and print a confirmation
+message, or print an error message if the department does not exist as shown
+below:
 
-Screenshots and links to resources that you used throughout are also useful to
-users and collaborators, but a little more syntactically complicated. Only add
-these in if you're feeling comfortable with Markdown.
+```py
+def delete_department():
+    id_ = input("Enter the department's id: ")
+    if department := Department.find_by_id(id_):
+        department.delete()
+        print(f'Department {id_} deleted')
+    else:
+        print(f'Department {id_} not found')
+```
 
-***
+Run `python lib/cli.py` and test the delete option with an existing department
+id such as `1` as well as a non-existent one like `99`.
 
 ## Conclusion
 
-A lot of work goes into a good CLI, but it all relies on concepts that you've
-practiced quite a bit by now. Hopefully this template and guide will get you
-off to a good start with your Phase 3 Project.
+The CLI front end for an ORM application prompts the user for an action, then
+calls ORM methods within a helper function to perform the necessary action.
 
-Happy coding!
+You'll implement the CLI front end for testing the ORM methods of the `Employee`
+class as part of the next lab.
 
-***
+## Solution Code
 
-## Resources
+```py
+from models.department import Department
+from models.employee import Employee
 
-- [Setting up a respository - Atlassian](https://www.atlassian.com/git/tutorials/setting-up-a-repository)
-- [Create a repo- GitHub Docs](https://docs.github.com/en/get-started/quickstart/create-a-repo)
-- [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
+
+def exit_program():
+    print("Goodbye!")
+    exit()
+
+# We'll implement the department functions in this lesson
+
+def list_departments():
+    departments = Department.get_all()
+    for department in departments:
+        print(department)
+
+
+def find_department_by_name():
+    name = input("Enter the department's name: ")
+    department = Department.find_by_name(name)
+    print(department) if department else print(
+        f'Department {name} not found')
+
+
+def find_department_by_id():
+    #use a trailing underscore not to override the built-in id function
+    id_ = input("Enter the department's id: ")
+    department = Department.find_by_id(id_)
+    print(department) if department else print(f'Department {id_} not found')
+
+
+def create_department():
+    name = input("Enter the department's name: ")
+    location = input("Enter the department's location: ")
+    try:
+        department = Department.create(name, location)
+        print(f'Success: {department}')
+    except Exception as exc:
+        print("Error creating department: ", exc)
+
+
+def update_department():
+    id_ = input("Enter the department's id: ")
+    if department := Department.find_by_id(id_):
+        try:
+            name = input("Enter the department's new name: ")
+            department.name = name
+            location = input("Enter the department's new location: ")
+            department.location = location
+
+            department.update()
+            print(f'Success: {department}')
+        except Exception as exc:
+            print("Error updating department: ", exc)
+    else:
+        print(f'Department {id_} not found')
+
+
+def delete_department():
+    id_ = input("Enter the department's id: ")
+    if department := Department.find_by_id(id_):
+        department.delete()
+        print(f'Department {id_} deleted')
+    else:
+        print(f'Department {id_} not found')
+
+
+# You'll implement the employee functions in the lab
+
+def list_employees():
+    pass
+
+
+def find_employee_by_name():
+    pass
+
+
+def find_employee_by_id():
+    pass
+
+
+def create_employee():
+    pass
+
+
+def update_employee():
+    pass
+
+
+def delete_employee():
+    pass
+
+
+def list_department_employees():
+    pass
+
+```
