@@ -54,7 +54,7 @@ def main():
             order_details_functions(choice)
 
         # Category options
-        elif choice in ("23", "24", "25", "26", "27", "28"):
+        elif choice in ("23", "25", "26", "27", "28"):
             category_functions(choice)
 
         else:
@@ -68,7 +68,7 @@ def menu():
     # Supplier options
     print("\nSupplier Management:")
     print("1. List all suppliers")
-    print("2. Find supplier by name")
+    # print("2. Find supplier by name") I'll fix this later
     print("3. Find supplier by id")
     print("4. Create supplier")
     print("5. Update supplier")
@@ -77,7 +77,7 @@ def menu():
     # Product options
     print("\nProduct Management:")
     print("7. List all products")
-    print("8. Find product by name")
+    # print("8. Find product by name") Not working, will fix later
     print("9. Find product by id")
     print("10. Create product")
     print("11. Update product")
@@ -93,7 +93,7 @@ def menu():
 
     # Order details options
     print("\nOrder Details Management:")
-    print("18. List all ordtell me which one is one to many and which is many to manyer details")
+    print("18. List all orders")
     print("19. Find order details by id")
     print("20. Create order details")
     print("21. Update order details")
@@ -102,7 +102,7 @@ def menu():
     # Category options
     print("\nCategory Management:")
     print("23. List all categories")
-    print("24. Find category by name")
+    # print("24. Find category by name") Not working, I'll fix later
     print("25. Find category by id")
     print("26. Create category")
     print("27. Update category")
@@ -112,8 +112,6 @@ def menu():
 def supplier_functions(choice):
     if choice == "1":
         list_suppliers()
-    elif choice == "2":
-        find_supplier_by_name()
     elif choice == "3":
         find_supplier_by_id()
     elif choice == "4":
@@ -126,8 +124,6 @@ def supplier_functions(choice):
 def product_functions(choice):
     if choice == "7":
         list_products()
-    elif choice == "8":
-        find_product_by_name()
     elif choice == "9":
         find_product_by_id()
     elif choice == "10":
@@ -164,8 +160,6 @@ def order_details_functions(choice):
 def category_functions(choice):
     if choice == "23":
         list_categories()
-    elif choice == "24":
-        find_category_by_name()
     elif choice == "24":
         find_category_by_name()
     elif choice == "25":

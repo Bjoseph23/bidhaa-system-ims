@@ -51,12 +51,16 @@ class OrderHistory:
 
     @classmethod
     def drop_table(cls):
-        sql = "DROP TABLE IF EXISTS order_history"
+        sql = """
+            DROP TABLE IF EXISTS order_history
+        """
         CURSOR.execute(sql)
         CONN.commit()
 
     def save(self):
-        sql = "INSERT INTO order_history (product_id, quantity, order_date) VALUES (?, ?, ?)"
+        sql = """
+            INSERT INTO order_history (product_id, quantity, order_date) VALUES (?, ?, ?)
+        """
         CURSOR.execute(sql, (self.product.id, self.quantity, self.order_date))
         CONN.commit()
         self.id = CURSOR.lastrowid
@@ -70,7 +74,9 @@ class OrderHistory:
 
     @classmethod
     def get_all(cls):
-        sql = "SELECT * FROM order_history"
+        sql = """
+            SELECT * FROM order_history
+        """
         rows = CURSOR.execute(sql).fetchall()
         return [cls.instance_from_db(row) for row in rows]
 
@@ -86,3 +92,12 @@ class OrderHistory:
             order.id = row[0]
             cls.all[order.id] = order
         return order
+
+    @classmethod
+    def find_by_id(cls, id_):
+        sql = """
+            SELECT * FROM products WHERE id = ?
+        """
+        CURSOR.execute(sql, (id_,))
+        row = CURSOR.fetchone()
+        return cls.instance_from_db(row) if row else None

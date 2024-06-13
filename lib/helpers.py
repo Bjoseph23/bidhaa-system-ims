@@ -75,10 +75,10 @@ def find_product_by_id():
 def create_product():
     name = input("Enter the product's name: ")
     price = float(input("Enter the product's price: "))
-    category_name = input("Enter the product's category name: ")
-    category = Category.find_by_name(category_name)
+    category_id= input("Enter the product's category id: ")
+    category = Category.find_by_id(category_id)
     if not category:
-        print(f'Category {category_name} not found. Please create the category first.')
+        print(f'Category {category_id} not found. Please create the category first.')
         return
     try:
         product = Product.create(name, price, category)

@@ -34,13 +34,35 @@ class Category:
         CONN.commit()
 
     @classmethod
+    def find_by_id(cls, id_):
+        sql = """
+            SELECT * FROM products WHERE id = ?
+        """
+        CURSOR.execute(sql, (id_,))
+        row = CURSOR.fetchone()
+        return cls.instance_from_db(row) if row else None
+        
+    @classmethod
+    def find_by_name(cls, name):
+        sql = """
+            SELECT * FROM products WHERE name = ?
+        """
+        CURSOR.execute(sql, (name,))
+        row = CURSOR.fetchone()
+        return cls.instance_from_db(row) if row else None
+    
+    @classmethod
     def drop_table(cls):
-        sql = "DROP TABLE IF EXISTS categories"
+        sql = """
+            DROP TABLE IF EXISTS categories
+        """
         CURSOR.execute(sql)
         CONN.commit()
 
     def save(self):
-        sql = "INSERT INTO categories (name) VALUES (?)"
+        sql = """
+            INSERT INTO categories (name) VALUES (?)
+        """
         CURSOR.execute(sql, (self.name,))
         CONN.commit()
         self.id = CURSOR.lastrowid
@@ -53,12 +75,16 @@ class Category:
         return category
 
     def update(self):
-        sql = "UPDATE categories SET name = ? WHERE id = ?"
+        sql = """
+            UPDATE categories SET name = ? WHERE id = ?
+        """
         CURSOR.execute(sql, (self.name, self.id))
         CONN.commit()
 
     def delete(self):
-        sql = "DELETE FROM categories WHERE id = ?"
+        sql = """
+            DELETE FROM categories WHERE id = ?
+        """
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
         del type(self).all[self.id]
@@ -77,6 +103,8 @@ class Category:
 
     @classmethod
     def get_all(cls):
-        sql = "SELECT * FROM categories"
+        sql = """
+            SELECT * FROM categories
+        """
         rows = CURSOR.execute(sql).fetchall()
         return [cls.instance_from_db(row) for row in rows]

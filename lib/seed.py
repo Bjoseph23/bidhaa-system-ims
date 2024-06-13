@@ -19,7 +19,6 @@ def seed_database():
     OrderHistory.create_table()
     Category.create_table()
 
-    # Seed data
     seed_products()
     seed_suppliers()
     seed_order_history()
@@ -33,8 +32,8 @@ def seed_products():
     product2 = Product.create("T-Shirt", 20.00, "Comfortable and stylish T-shirt",2)
 
 def seed_suppliers():
-    supplier1 = Supplier.create("TechGiant Inc.", "123 Main St")
-    supplier2 = Supplier.create("Fashion Emporium", "456 Elm St")
+    supplier1 = Supplier.create("Techies", "123 Main St")
+    supplier2 = Supplier.create("Hermes", "456 Elm St")
 
 def seed_order_history():
     product1 = Product.find_by_id(1)
@@ -42,7 +41,7 @@ def seed_order_history():
 
     if product1 and product2:
         order_history1 = OrderHistory.create(product1, 2, "2024-06-10")
-        order_history2 = OrderHistory.create(product2, 5, "2024-06-11")
+        order_history2 = OrderHistory.create(product2, 5, "2024-06-13")
     else:
         print("Error: Product not found")
 

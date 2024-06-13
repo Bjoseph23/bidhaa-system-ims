@@ -46,14 +46,19 @@ class Supplier:
         CURSOR.execute(sql)
         CONN.commit()
 
+
     @classmethod
     def drop_table(cls):
-        sql = "DROP TABLE IF EXISTS suppliers"
+        sql = """
+            DROP TABLE IF EXISTS suppliers
+        """
         CURSOR.execute(sql)
         CONN.commit()
 
     def save(self):
-        sql = "INSERT INTO suppliers (name, contact_info) VALUES (?, ?)"
+        sql = """
+            INSERT INTO suppliers (name, contact_info) VALUES (?, ?)
+        """
         CURSOR.execute(sql, (self.name, self.contact_info))
         CONN.commit()
         self.id = CURSOR.lastrowid
@@ -66,12 +71,16 @@ class Supplier:
         return supplier
 
     def update(self):
-        sql = "UPDATE suppliers SET name = ?, contact_info = ? WHERE id = ?"
+        sql = """
+            UPDATE suppliers SET name = ?, contact_info = ? WHERE id = ?
+        """
         CURSOR.execute(sql, (self.name, self.contact_info, self.id))
         CONN.commit()
 
     def delete(self):
-        sql = "DELETE FROM suppliers WHERE id = ?"
+        sql = """
+            DELETE FROM suppliers WHERE id = ?
+            """
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
         del type(self).all[self.id]
@@ -91,13 +100,17 @@ class Supplier:
 
     @classmethod
     def get_all(cls):
-        sql = "SELECT * FROM suppliers"
+        sql = """
+            SELECT * FROM suppliers
+        """
         rows = CURSOR.execute(sql).fetchall()
         return [cls.instance_from_db(row) for row in rows]
 
     @classmethod
     def find_by_id(cls, id_):
-        sql = "SELECT * FROM suppliers WHERE id = ?"
+        sql = """
+            SELECT * FROM suppliers WHERE id = ?
+        """
         CURSOR.execute(sql, (id_,))
         row = CURSOR.fetchone()
         return cls.instance_from_db(row) if row else None

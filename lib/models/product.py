@@ -73,12 +73,16 @@ class Product:
 
     @classmethod
     def drop_table(cls):
-        sql = "DROP TABLE IF EXISTS products"
+        sql = """
+            DROP TABLE IF EXISTS products
+        """
         CURSOR.execute(sql)
         CONN.commit()
 
     def save(self):
-        sql = "INSERT INTO products (name, price, description, category_id) VALUES (?, ?, ?, ?)"
+        sql = """
+            INSERT INTO products (name, price, description, category_id) VALUES (?, ?, ?, ?)
+        """
         CURSOR.execute(sql, (self.name, self.price, self.description, self.category_id))
         CONN.commit()
         self.id = CURSOR.lastrowid
@@ -91,32 +95,42 @@ class Product:
         return product
 
     def update(self):
-        sql = "UPDATE products SET name = ?, price = ?, description = ?, category_id = ? WHERE id = ?"
+        sql = """
+            UPDATE products SET name = ?, price = ?, description = ?, category_id = ? WHERE id = ?
+        """
         CURSOR.execute(sql, (self.name, self.price, self.description, self.category_id, self.id))
         CONN.commit()
 
     @classmethod
     def get_all(cls):
-        sql = "SELECT * FROM products"
+        sql = """
+            SELECT * FROM products
+        """
         rows = CURSOR.execute(sql).fetchall()
         return [cls.instance_from_db(row) for row in rows]
 
     @classmethod
     def find_by_id(cls, id_):
-        sql = "SELECT * FROM products WHERE id = ?"
+        sql = """
+            SELECT * FROM products WHERE id = ?
+        """
         CURSOR.execute(sql, (id_,))
         row = CURSOR.fetchone()
         return cls.instance_from_db(row) if row else None
 
     @classmethod
     def find_by_name(cls, name):
-        sql = "SELECT * FROM products WHERE name = ?"
+        sql = """
+            SELECT * FROM products WHERE name = ?
+        """
         CURSOR.execute(sql, (name,))
         row = CURSOR.fetchone()
         return cls.instance_from_db(row) if row else None
 
     def delete(self):
-        sql = "DELETE FROM products WHERE id = ?"
+        sql = """
+            DELETE FROM products WHERE id = ?
+        """
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
         del type(self).all[self.id]
