@@ -13,7 +13,6 @@ This Inventory Management System (IMS) is a Python-based command-line applicatio
 ## ERD Diagram
 ![alt text](image.png)
 
-
 ## Installation
 
 
